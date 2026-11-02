@@ -108,6 +108,60 @@ try {
   });
   await touchContext.close();
   // --- end movement ---
+  // --- Gate 2: city data and landmarks (#4) ---
+  await page.goto(`${origin}/?data=/__fixtures/city.json`);
+  await page.waitForFunction(() => document.body.dataset.ready === 'true', null, { timeout: 30_000 });
+  await page.waitForTimeout(2700);
+  const stat = (name) => page.locator(`#stats [data-stat="${name}"]`).textContent();
+  const statsWant = { tokens: '123,456,789', commits: '4,321', top_language: 'TypeScript', as_of: '2026-10-28' };
+  for (const [name, want] of Object.entries(statsWant)) {
+    const got = await stat(name);
+    if (got !== want) problems.push(`stats ${name}: want ${want}, got ${got}`);
+  }
+  const statsEl = page.locator('#stats');
+  if (await statsEl.getAttribute('data-source') !== 'live') problems.push('stats not from the fixture');
+  if (await statsEl.getAttribute('data-stale') !== 'true') problems.push('2026-10-28 data not shown as stale');
+
+  const SITES = {
+    portfolio: 'https://lincolnstuek.com/', 'new-era': 'https://new-era-design.com/', 'bionic-wave': 'https://bionicwave.ai/',
+    'ka-tech': 'https://katechairsoft.com/', 'ka-ops': null, aios: null, crm: null, systemselect: null,
+  };
+  for (const [key, site] of Object.entries(SITES)) {
+    const p = await page.evaluate((k) => {
+      const pt = window.commitCity.landmarkPoint(k);
+      document.querySelector('canvas').dispatchEvent(new MouseEvent('click', { clientX: pt.x, clientY: pt.y, bubbles: true }));
+      return pt;
+    }, key);
+    if (p.x < 0 || p.y < 0 || p.x > 960 || p.y > 540) problems.push(`${key} is off screen at ${Math.round(p.x)},${Math.round(p.y)}`);
+    const opened = await page.waitForFunction((k) => {
+      const el = document.getElementById('landmark-panel');
+      return el && !el.hidden && el.dataset.landmark === k;
+    }, key, { timeout: 2000 }).then(() => true, () => false);
+    if (!opened) {
+      const where = await page.evaluate(() => `${document.body.dataset.mode} cam ${document.body.dataset.camera} open ${document.getElementById('landmark-panel')?.dataset.landmark}`);
+      problems.push(`click on ${key} at ${Math.round(p.x)},${Math.round(p.y)} did not open its panel (${where})`);
+      continue;
+    }
+    const panel = await page.evaluate(() => {
+      const el = document.getElementById('landmark-panel');
+      const f = (n) => el.querySelector(`[data-field="${n}"]`)?.textContent ?? null;
+      return { name: f('name'), line: f('line'), commits: f('commits'), commits30d: f('commits30d'), lastUpdate: f('lastUpdate'),
+        language: f('language'), links: [...el.querySelectorAll('a')].map((a) => a.href) };
+    });
+    if (!panel.name || !panel.line || !panel.commits || !panel.lastUpdate || !panel.language) problems.push(`${key} panel missing a field`);
+    const wantLinks = site ? [site] : [];
+    if (JSON.stringify(panel.links) !== JSON.stringify(wantLinks)) problems.push(`${key} links: want ${wantLinks}, got ${panel.links}`);
+    if (panel.links.some((h) => /github/i.test(h))) problems.push(`${key} links to a repo`);
+    if (key === 'crm' && (panel.commits30d !== '—' || panel.lastUpdate !== '—')) problems.push('crm nulls not shown as a dash');
+  }
+
+  // A malformed data file falls back to the bundled copy.
+  await page.goto(`${origin}/?data=/__fixtures/city-malformed.json`);
+  await page.waitForSelector('#stats', { timeout: 30_000 });
+  if (await page.locator('#stats').getAttribute('data-source') !== 'fallback') problems.push('malformed data did not fall back');
+  if ((await stat('commits')) === '0') problems.push('fallback shows 0 for an unknown');
+  console.log('page test: stats, 8 landmark panels and fallback checked');
+  // --- end Gate 2 (#4) ---
 } catch (e) {
   problems.push(`runner: ${e.message}`);
 } finally {

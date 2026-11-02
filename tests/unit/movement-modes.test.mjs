@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { createController, MODES } from '../../src/movement/controller.js';
 import { createInput } from '../../src/movement/input.js';
 import { createWorld, TEST_SCENE } from '../../src/movement/world.js';
@@ -136,4 +136,29 @@ test('reduced motion skips the fly-in: the camera starts at the mode view', () =
   });
   assert.ok(heights[0] > 30, `fly-in should start high, got ${heights[0]}`);
   assert.ok(heights[1] < 15, `reduced motion should start at the orbit view, got ${heights[1]}`);
+});
+
+const forward = (camera) => new Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+
+for (const mode of ['first-person', 'walk', 'drive', 'drone']) {
+  test(`${mode}: the camera looks the way it travels`, () => {
+    const { camera, input, controller } = setup();
+    controller.setMode(mode);
+    run(controller, 1, 60);
+    const start = pos(camera);
+    input.keyDown('KeyW');
+    run(controller, 1, 60);
+    input.keyUp('KeyW');
+    const travel = pos(camera).sub(start).setY(0).normalize();
+    const look = forward(camera).setY(0).normalize();
+    assert.ok(look.dot(travel) > 0.7, `looks ${look.toArray()} but travels ${travel.toArray()}`);
+  });
+}
+
+test('orbit: the camera looks at the centre it circles', () => {
+  const { camera, controller } = setup();
+  controller.setMode('orbit');
+  run(controller, 2, 60);
+  const toCentre = new Vector3(0, 2, 0).sub(camera.position).normalize();
+  assert.ok(forward(camera).dot(toCentre) > 0.99, 'orbit camera faces away from the centre');
 });

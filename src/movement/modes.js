@@ -1,9 +1,9 @@
 // The five movement modes. Each has one interface:
-//   enter(), update(dt, input), exit(), camera (an Object3D holding the pose
+//   enter(), update(dt, input), exit(), camera (a Camera holding the pose
 //   the mode wants for the view; the controller copies it to the real camera).
 // Modes share `ctx`: { world, pose: {x, z, yaw}, reducedMotion, scene? }.
 // pose carries the visitor's place across mode switches.
-import { BoxGeometry, CapsuleGeometry, Mesh, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+import { BoxGeometry, Camera, CapsuleGeometry, Mesh, MeshStandardMaterial, Vector3 } from 'three';
 
 const LOOK = 0.0025; // radians per pixel of mouse or drag
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -21,7 +21,7 @@ function standIn(ctx, geometry) {
 
 function firstPerson(ctx) {
   const EYE = 1.7, SPEED = 4, R = 0.3;
-  const camera = new Object3D();
+  const camera = new Camera();
   let x, z, yaw, pitch;
   const place = () => {
     camera.position.set(x, EYE, z);
@@ -52,7 +52,7 @@ function firstPerson(ctx) {
 
 function walk(ctx) {
   const SPEED = 3.5, R = 0.35, DIST = 4.5;
-  const camera = new Object3D();
+  const camera = new Camera();
   const body = standIn(ctx, new CapsuleGeometry(0.35, 1.1, 4, 12));
   const head = new Vector3();
   let x, z, facing, yaw, pitch;
@@ -100,7 +100,7 @@ function walk(ctx) {
 
 function drive(ctx) {
   const ACCEL = 14, MAX = 22, REVERSE = 6, TURN = 1.8, GRIP = 3, DRAG = 0.35, R = 1;
-  const camera = new Object3D();
+  const camera = new Camera();
   const car = standIn(ctx, new BoxGeometry(1.8, 0.7, 3.6));
   const target = new Vector3();
   let x, z, heading, vx, vz, t;
@@ -159,7 +159,7 @@ function drive(ctx) {
 
 function drone(ctx) {
   const SPEED = 9, R = 0.5, START = 6;
-  const camera = new Object3D();
+  const camera = new Camera();
   const dir = new Vector3();
   let x, y, z, yaw, pitch;
   const place = () => {
@@ -195,7 +195,7 @@ function drone(ctx) {
 
 function orbit(ctx) {
   const GLIDE = 0.12, TURN = 1, ZOOM = 8, CENTER = new Vector3(0, 2, 0);
-  const camera = new Object3D();
+  const camera = new Camera();
   let angle, elevation, radius;
   const place = () => {
     const c = radius * Math.cos(elevation);
