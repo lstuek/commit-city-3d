@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-10-28T06:00:00Z",
+  "totals": { "tokens": 123456789, "commits": 4321, "top_language": "TypeScript" },
+  "landmarks": {
+    "portfolio": { "commits_total": 310, "commits_30d": 12, "pushed_this_week": true, "last_push_date": "2026-10-27", "language": "TypeScript" },
+    "new-era": { "commits_total": 220, "commits_30d": 0, "pushed_this_week": false, "last_push_date": "2026-09-02", "language": "Liquid" },
+    "bionic-wave": { "commits_total": 180, "commits_30d": 5, "pushed_this_week": false, "last_push_date": "2026-10-15", "language": "Liquid" },
+    "ka-tech": { "commits_total": 95, "commits_30d": 3, "pushed_this_week": true, "last_push_date": "2026-10-26", "language": "TypeScript" },
+    "ka-ops": { "commits_total": 140, "commits_30d": 20, "pushed_this_week": true, "last_push_date": "2026-10-28", "language": "Python" },
+    "aios": { "commits_total": 2100, "commits_30d": 400, "pushed_this_week": true, "last_push_date": "2026-10-28", "language": "JavaScript" },
+    "crm": { "commits_total": 260, "commits_30d": null, "pushed_this_week": false, "last_push_date": null, "language": "TypeScript" },
+    "systemselect": { "commits_total": 75, "commits_30d": 1, "pushed_this_week": false, "last_push_date": "2026-10-01", "language": "TypeScript" }
+  },
+  "locked": { "activity_30d": 57 }
+}
