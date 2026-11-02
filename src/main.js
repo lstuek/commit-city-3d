@@ -5,6 +5,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import basisJsUrl from 'three/examples/jsm/libs/basis/basis_transcoder.js?url';
 import basisWasmUrl from 'three/examples/jsm/libs/basis/basis_transcoder.wasm?url';
 import sampleUrl from './generated/sample.glb?url';
+import { mountSound } from './audio/controls.js';
 import { startQuality } from './quality/index.js'; // quality governor, recovery, benchmark (#14)
 import { startMovement } from './movement/index.js'; // movement (#5)
 // --- city data and landmarks (#4) ---
@@ -16,6 +17,10 @@ import { addTestLandmarks, setupInteraction } from './landmarks/interaction.js';
 // --- end city data and landmarks imports ---
 
 const status = document.body.dataset;
+
+// --- Sound (#6): Enter, radio and mute controls; audio files load after the scene is shown.
+mountSound();
+// --- end Sound
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
