@@ -5,6 +5,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import basisJsUrl from 'three/examples/jsm/libs/basis/basis_transcoder.js?url';
 import basisWasmUrl from 'three/examples/jsm/libs/basis/basis_transcoder.wasm?url';
 import sampleUrl from './generated/sample.glb?url';
+import { startQuality } from './quality/index.js'; // quality governor, recovery, benchmark (#14)
 import { startMovement } from './movement/index.js'; // movement (#5)
 // --- city data and landmarks (#4) ---
 import { loadCityData, LIVE_URL, LANDMARK_KEYS } from './data/city-data.js';
@@ -71,11 +72,14 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
+// Quality governor (#14): picks the tier, caps phone lite at 30 fps, runs ?bench=1.
+const quality = await startQuality({ renderer, camera });
+
 let frames = 0;
-renderer.setAnimationLoop((t) => {
+renderer.setAnimationLoop(quality.loop((t) => {
   gltf.scene.rotation.y = t / 2000;
-  movement.update(t); // movement (#5)
+  if (!quality.benchmarking()) movement.update(t); // movement (#5); the benchmark owns the camera while it runs
   landmarks.update(); // #4: proximity
   renderer.render(scene, camera);
   if (++frames === 3) status.ready = 'true';
-});
+}));
