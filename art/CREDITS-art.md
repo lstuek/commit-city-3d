@@ -1,6 +1,22 @@
-# Art credits (ticket #16: cyborg and car)
+# Art credits (art/)
 
-Every third-party file in `art/sources/` and its license, confirmed on the source page on 2026-10-29.
+Every third-party file in art/ and its license. Everything else (scripts, meshes, window atlas, baked maps, armor shells, the car) is made by the scripts in this folder.
+
+## Street kit textures (ticket #15)
+
+| Source texture | Author / site | License | URL | Used for |
+|---|---|---|---|---|
+| Concrete034 (1K-JPG: Color, Roughness, NormalGL) | ambientCG | CC0 1.0 | https://ambientcg.com/a/Concrete034 | trim_concrete |
+| PaintedMetal004 (1K-JPG: Color, Roughness, Metalness, NormalGL) | ambientCG | CC0 1.0 | https://ambientcg.com/a/PaintedMetal004 | trim_paint (recoloured) |
+| Metal029 (1K-JPG: Color, Roughness, Metalness, NormalGL) | ambientCG | CC0 1.0 | https://ambientcg.com/a/Metal029 | trim_grime (recoloured, grime added) |
+| Asphalt031 (1K-JPG: Color, Roughness, NormalGL) | ambientCG | CC0 1.0 | https://ambientcg.com/a/Asphalt031 | trim_asphalt (darkened, wet roughness) |
+
+License evidence: https://docs.ambientcg.com/license/ ("licensed under the Creative Commons CC0 1.0 Universal License"), read 2026-10-29. Credit is not required; listed anyway.
+Raw maps live in art/src_textures/ (only the maps used; zips, .blend and other formats were deleted). Output sheets are processed derivatives, written by art/build_trims.py.
+
+## Cyborg and car (ticket #16)
+
+Third-party files in `art/sources/`, confirmed on the source page on 2026-10-29.
 
 | Used for | Source page | Author | License | Confirmed |
 |---|---|---|---|---|
@@ -12,7 +28,6 @@ Owned work (no credit needed): the armor shells (cut from the body's own faces),
 Looked at and not used:
 - HoverCars by papptimus, https://papptimus.itch.io/hovercars, CC BY 4.0 (page). Downloaded and inspected only: the coupe is 137 faces in a single mesh with a 256 px texture and no separate wheels, so the car was modeled from scratch. No file from it is in the repo.
 - "Cyberpunk car" by 4d_Bob (Sketchfab, CC-BY): download needs a Sketchfab login, so it was not fetched.
-
 - Quaternius "Sports Car" models on Poly Pizza (CC0: https://poly.pizza/m/1mkmFkAz5v, /m/Gzj704DXdr, /m/OyqKvX9xNh) and "Sports Car Armored" (/m/bG0hEKshdv): no login needed, license confirmed on the page, rendered and rejected on 2026-10-29: tall low-poly sedan and coupe shapes, no wedge. Nothing from them is in the repo. Poly Pizza's other car results are real-brand models (Ferrari, Camaro, GTR) and were skipped as fan models.
 - Kenney and Quaternius pack lists were searched for a hover car or wedge car: none found.
 
