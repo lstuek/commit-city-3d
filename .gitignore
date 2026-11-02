@@ -3,3 +3,8 @@ node_modules/
 .scratch/
 .env*
 .claude/
+dist/
+src/generated/
+tests/output/
+test-results/
+playwright-report/

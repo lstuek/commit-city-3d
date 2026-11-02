@@ -2,7 +2,7 @@
 
 A night cyberpunk city in three.js, built from Lincoln's GitHub activity, hosted on GitHub Pages at https://lstuek.github.io. Decisions: [ref/spec.md](ref/spec.md) (product) and [ref/build.md](ref/build.md) (build and tests). State: [PLAN.md](PLAN.md). Terms: [GLOSSARY.md](GLOSSARY.md). Rules for all of personal: ../../index.md.
 
-gate: none yet; ticket #3 adds `npm run gate` and replaces this line.
+gate: `npm run gate`
 allow: art/ — Blender sources for owned art: the Python scripts that build each asset, plus its .blend when under 5 MB (no LFS; the script rebuilds larger ones)
 Map: read `index.md` first; `node ~/.claude/infra/index.mjs <repo root>` writes it, never edit it by hand.
 

@@ -1,0 +1,31 @@
+{
+  "name": "commit-city",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "npm run assets && vite",
+    "assets": "node scripts/assets.mjs tests/fixtures/sample/sample.gltf src/generated/sample.glb",
+    "build": "npm run assets && vite build",
+    "check:hash": "node scripts/check-hash.mjs dist",
+    "check:size": "node scripts/check-size.mjs dist",
+    "test:unit": "node --test \"tests/unit/*.test.mjs\"",
+    "test:page": "node tests/page.mjs dist",
+    "gate": "npm run test:unit && npm run build && npm run check:hash && npm run check:size && npm run test:page"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
+    "ktx2-encoder": "0.6.0",
+    "meshoptimizer": "1.3.0",
+    "playwright": "1.63.0",
+    "pngjs": "7.0.0",
+    "vite": "8.3.5"
+  }
+}

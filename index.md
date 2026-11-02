@@ -4,4 +4,7 @@
 - [art/](art/index.md) — (no purpose line)
 - [docs/](docs/index.md) — Matt Pocock's skill files: the domain glossary, docs/agents/ (tracker, labels, domain setup) and docs/adr/ (Lincoln 2026-10-16, plans/2026-10-16-pocock-base/spec.md); .scratch/ is a dotfolder and always allowed
 - [ref/](ref/index.md) — docs worth keeping: specs, research, handoffs
+- [scripts/](scripts/) — tooling
+- [src/](src/) — the code folder the framework needs (one or more)
+- [tests/](tests/) — tests when they do not live inside the code folder
 - [GLOSSARY.md](GLOSSARY.md) — Glossary: Commit City
