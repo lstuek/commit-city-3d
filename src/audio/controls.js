@@ -23,6 +23,7 @@ export function mountSound(root = document.body) {
   const mute = button('Mute', { id: 'mute', 'aria-pressed': 'false' });
   const bar = document.createElement('div');
   bar.id = 'sound-controls';
+  bar.style.cssText = 'position:fixed;top:0;right:0';
   bar.append(enter, radio, mute);
   root.prepend(bar);
 

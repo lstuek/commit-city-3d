@@ -6,6 +6,15 @@ import basisJsUrl from 'three/examples/jsm/libs/basis/basis_transcoder.js?url';
 import basisWasmUrl from 'three/examples/jsm/libs/basis/basis_transcoder.wasm?url';
 import sampleUrl from './generated/sample.glb?url';
 import { mountSound } from './audio/controls.js';
+import { startQuality } from './quality/index.js'; // quality governor, recovery, benchmark (#14)
+import { startMovement } from './movement/index.js'; // movement (#5)
+// --- city data and landmarks (#4) ---
+import { loadCityData, LIVE_URL, LANDMARK_KEYS } from './data/city-data.js';
+import bundledCity from './data/fallback.json';
+import { renderStats } from './data/stats.js';
+import { panelModel, createPanel } from './landmarks/panel.js';
+import { addTestLandmarks, setupInteraction } from './landmarks/interaction.js';
+// --- end city data and landmarks imports ---
 
 const status = document.body.dataset;
 
@@ -25,6 +34,10 @@ camera.position.set(2, 1.5, 3);
 camera.lookAt(0, 0, 0);
 scene.add(new THREE.HemisphereLight(0x88aaff, 0x221133, 1.5));
 
+// --- Movement (#5): modes, test scene, input. Owns the camera pose. ---
+const movement = startMovement({ scene, camera, canvas: renderer.domElement, status });
+// --- end movement ---
+
 // KTX2Loader fetches the transcoder by fixed file names; map them to the hashed files.
 const transcoder = { 'basis/basis_transcoder.js': basisJsUrl, 'basis/basis_transcoder.wasm': basisWasmUrl };
 const manager = new THREE.LoadingManager();
@@ -32,20 +45,30 @@ manager.setURLModifier((url) => transcoder[url] ?? url);
 const ktx2 = new KTX2Loader(manager).setTranscoderPath('basis/').detectSupport(renderer);
 const gltfLoader = new GLTFLoader(manager).setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder);
 
-async function loadCityData() {
+// --- city data and landmarks (#4) ---
+// ?data= overrides the live URL with a same-origin file (tests); any failure uses the bundled copy.
+function cityDataUrl() {
   const param = new URLSearchParams(location.search).get('data');
-  if (!param) return null;
+  if (!param) return LIVE_URL;
   const url = new URL(param, location.href);
   if (url.origin !== location.origin) throw new Error('city data must be same-origin');
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`city data ${response.status}`);
-  return response.json();
+  return url;
 }
 
-const [gltf, city] = await Promise.all([gltfLoader.loadAsync(sampleUrl), loadCityData()]);
+const [gltf, { city, source }] = await Promise.all([gltfLoader.loadAsync(sampleUrl), loadCityData(cityDataUrl(), bundledCity)]);
 scene.add(gltf.scene);
 status.model = 'loaded';
-status.cityData = city?.generated_at ?? 'none';
+status.cityData = city.generated_at;
+renderStats(city, source);
+const panel = createPanel();
+const landmarks = setupInteraction({
+  camera,
+  canvas: renderer.domElement,
+  meshes: addTestLandmarks(scene, LANDMARK_KEYS),
+  onSelect: (key) => panel.open(panelModel(key, city)),
+});
+window.commitCity = { landmarkPoint: landmarks.screenPoint };
+// --- end city data and landmarks ---
 
 function resize() {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -54,9 +77,14 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
+// Quality governor (#14): picks the tier, caps phone lite at 30 fps, runs ?bench=1.
+const quality = await startQuality({ renderer, camera });
+
 let frames = 0;
-renderer.setAnimationLoop((t) => {
+renderer.setAnimationLoop(quality.loop((t) => {
   gltf.scene.rotation.y = t / 2000;
+  if (!quality.benchmarking()) movement.update(t); // movement (#5); the benchmark owns the camera while it runs
+  landmarks.update(); // #4: proximity
   renderer.render(scene, camera);
   if (++frames === 3) status.ready = 'true';
-});
+}));
