@@ -1,9 +1,6 @@
-// Landmark interaction: click (raycast) and proximity (camera distance)
-// detection. Calls onSelect(key) for the landmark chosen.
 import * as THREE from 'three';
 import { nearestLandmark } from './panel.js';
 
-// Plain test landmarks until the design tickets bring the real buildings.
 export function addTestLandmarks(scene, keys, { radius = 1.2, y = -0.5 } = {}) {
   const geometry = new THREE.BoxGeometry(0.22, 0.22, 0.22);
   const material = new THREE.MeshBasicMaterial({ color: 0x33ccff, wireframe: true });
@@ -30,13 +27,11 @@ export function setupInteraction({ camera, canvas, meshes, onSelect, nearRadius 
   const spots = meshes.map((m) => ({ key: m.userData.landmark, x: m.position.x, z: m.position.z }));
   let near = null;
   return {
-    // Per frame: opens a panel when the camera comes near a landmark.
     update() {
       const key = nearestLandmark(camera.position, spots, nearRadius);
       if (key && key !== near) onSelect(key);
       near = key;
     },
-    // Page coordinates of a landmark's centre (used by the headless page test).
     screenPoint(key) {
       const mesh = meshes.find((m) => m.userData.landmark === key);
       const rect = canvas.getBoundingClientRect();

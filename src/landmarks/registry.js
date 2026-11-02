@@ -1,8 +1,3 @@
-// Landmark registry: the 8 landmarks, static in the page (never in the
-// uploaded data). Lines are placeholders until Lincoln approves them.
-// A site is a live site or null; never a repo link.
-// Hologram symbol and district come with the design tickets.
-
 export const LANDMARKS = [
   { key: 'portfolio', name: 'Portfolio', line: 'Placeholder line: Lincoln\'s portfolio site.', site: 'https://lincolnstuek.com' },
   { key: 'new-era', name: 'New Era Design', line: 'Placeholder line: a studio site.', site: 'https://new-era-design.com' },

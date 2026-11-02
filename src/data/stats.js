@@ -1,5 +1,3 @@
-// Flat, unstyled stats bar: AI tokens, commits, top language, "as of" date.
-// Styling belongs to the design tickets; data-stale marks the stale state.
 import { formatValue, isStale } from './city-data.js';
 
 export function renderStats(city, source, { doc = document, now = Date.now() } = {}) {

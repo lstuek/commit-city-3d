@@ -1,6 +1,3 @@
-// Landmark panel: the fields for one landmark, proximity choice, and the flat
-// HTML copy of the panel (phones, screen readers, tests). Unstyled on purpose:
-// the 3D panel and all styling belong to the design tickets.
 import { LANDMARKS } from './registry.js';
 import { formatValue, DASH } from '../data/city-data.js';
 
@@ -17,7 +14,6 @@ export function panelModel(key, city) {
   };
 }
 
-// spots: [{ key, x, z }]; returns the nearest key within radius, or null.
 export function nearestLandmark(position, spots, radius) {
   let best = null;
   let bestD = radius;
@@ -28,7 +24,6 @@ export function nearestLandmark(position, spots, radius) {
   return best;
 }
 
-// Flat HTML panel; holds which landmark is open.
 export function createPanel(doc = document) {
   const el = doc.createElement('section');
   el.id = 'landmark-panel';

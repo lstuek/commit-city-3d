@@ -1,7 +1,3 @@
-// City data loader: the only module that touches the network for data.
-// Input a URL and a bundled fallback; output validated city data with every
-// missing or invalid value as null (shown as a dash, never as 0).
-
 export const LANDMARK_KEYS = ['portfolio', 'new-era', 'bionic-wave', 'ka-tech', 'ka-ops', 'aios', 'crm', 'systemselect'];
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -10,7 +6,6 @@ const text = (v) => (typeof v === 'string' && v.trim() ? v : null);
 const flag = (v) => (typeof v === 'boolean' ? v : null);
 const day = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
 
-// Throws on data that is not city data at all (so the loader falls back).
 export function parseCityData(raw) {
   if (!isObject(raw) || typeof raw.generated_at !== 'string' || Number.isNaN(Date.parse(raw.generated_at))) {
     throw new Error('malformed city data');
@@ -37,7 +32,6 @@ export function parseCityData(raw) {
 
 export const DASH = '—';
 
-// A null is unknown, never zero: it shows a dash.
 export function formatValue(v) {
   if (v === null || v === undefined) return DASH;
   return typeof v === 'number' ? v.toLocaleString('en-US') : String(v);
@@ -51,8 +45,6 @@ export function isStale(city, now = Date.now()) {
 
 export const LIVE_URL = 'https://raw.githubusercontent.com/lstuek/lstuek/main/data/city.json';
 
-// Any failure (network, HTTP status, bad JSON, wrong shape) uses the copy
-// bundled at deploy. source tells which one the page shows.
 export async function loadCityData(url, fallback, { fetch = globalThis.fetch, timeoutMs = 8000 } = {}) {
   try {
     const response = await fetch(url, { cache: 'no-cache', signal: AbortSignal.timeout(timeoutMs) });
