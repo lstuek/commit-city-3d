@@ -5,6 +5,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import basisJsUrl from 'three/examples/jsm/libs/basis/basis_transcoder.js?url';
 import basisWasmUrl from 'three/examples/jsm/libs/basis/basis_transcoder.wasm?url';
 import sampleUrl from './generated/sample.glb?url';
+import { startMovement } from './movement/index.js'; // movement (#5)
 // --- city data and landmarks (#4) ---
 import { loadCityData, LIVE_URL, LANDMARK_KEYS } from './data/city-data.js';
 import bundledCity from './data/fallback.json';
@@ -26,6 +27,10 @@ const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerH
 camera.position.set(2, 1.5, 3);
 camera.lookAt(0, 0, 0);
 scene.add(new THREE.HemisphereLight(0x88aaff, 0x221133, 1.5));
+
+// --- Movement (#5): modes, test scene, input. Owns the camera pose. ---
+const movement = startMovement({ scene, camera, canvas: renderer.domElement, status });
+// --- end movement ---
 
 // KTX2Loader fetches the transcoder by fixed file names; map them to the hashed files.
 const transcoder = { 'basis/basis_transcoder.js': basisJsUrl, 'basis/basis_transcoder.wasm': basisWasmUrl };
@@ -69,6 +74,7 @@ window.addEventListener('resize', resize);
 let frames = 0;
 renderer.setAnimationLoop((t) => {
   gltf.scene.rotation.y = t / 2000;
+  movement.update(t); // movement (#5)
   landmarks.update(); // #4: proximity
   renderer.render(scene, camera);
   if (++frames === 3) status.ready = 'true';
