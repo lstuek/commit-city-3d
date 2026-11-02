@@ -72,6 +72,7 @@ export async function startQuality({ renderer, camera }) {
 
   return {
     tier: () => status.tier,
+    benchmarking: () => Boolean(bench && !bench.done),
     /** Wrap the frame callback: cap, benchmark camera, governor and context status. */
     loop(render) {
       let last = null;
