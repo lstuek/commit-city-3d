@@ -13,3 +13,8 @@
 - Bugs found while merging: walk, drive, drone and orbit cameras faced away from their target (Object3D rigs; now Cameras, new direction tests); movement overwrote the benchmark camera (movement now pauses during a benchmark, new page check); the movement switch covered the sound Enter button (sound bar pinned top right).
 - Removed tracked Blender backups and Python caches from art/.
 - Live screenshot: archive/2026-11-02-live-merged/.
+
+## 2026-11-03 Pivot and archive
+- Lincoln paused the 3D work and pivoted to a looping video banner (a 3D page cannot run on github.com). Decisions: aios plans/2026-10-27-commit-city/pivot-video.md.
+- Closed #1, #2, #7-#13, #17-#20 as not planned and PR #21. The #7 street agent was stopped mid-run; its unfinished work stays only in the local agent-7 worktree.
+- Pages switched off; repo archived (read-only).
